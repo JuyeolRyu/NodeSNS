@@ -1,0 +1,29 @@
+{
+    //2019버전으로
+    //module 시스템으로 코딩하겠다
+    //jsx 사용하는것 허용
+    "perserOptions": {
+        "ecmaVersion": 2019,
+        "sourceType": "module",
+        "exmaFeatures": {
+            "jsx": true
+        }
+    },
+    //브라우저,노드 환경 사용한다
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    //eslint가 추천하는 기본코딩스타일
+    //리액트코딩할때 추천하는 코딩스타일
+    "extends": [
+        "eslint: recommended",
+        "plugin: react/recommended"
+    ],
+    //import 문법 사용가능하게 설정
+    //플러그인들은 설치해줘야 한다
+    "plugins": [
+        "import",
+        "react-hooks"
+    ]
+}
