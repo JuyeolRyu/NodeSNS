@@ -1,17 +1,43 @@
 import React from 'react';
-import Head from 'next/head';
-import AppLayout from '../components/AppLayout';
+import { Card, List,Input,Form,Icon,Button } from 'antd';
+
 const Profile = () => {
     return (
-        <>
-            <Head>
-                <title>NodeBird</title>
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.13.0/antd.compact.min.css" integrity="sha512-1hNNMQk/NM85FLhT2Rxal0CPnh0nw5hD12uXml/dS6APxgUXEHpZY6UN8XJ3lTvssxNAjf2vGnqsnLwEtwaJyA==" crossorigin="anonymous" />
-            </Head>
-            <AppLayout>
-                <div>프로필</div>
-            </AppLayout>
-        </>
+        <div>
+            <Form style ={{ marginBottom: '20px', border: '1px solid #d9d9d9', padding: '20px'}}>
+                <Input addonBefore="닉네임"/>
+                <Button type="primary">수정</Button>
+            </Form>
+            <List
+                style ={{marginBottom: '20px'}}
+                grid={{gutter:4, xs:2, md:3}}
+                size="small"
+                header={<div>팔로잉 목록</div>}
+                loadMore={<Button style={{width:'100%'}}>더보기</Button>}
+                bordered
+                dataSource={['코몽','몽키','노드SNS']}
+                renderItem={item=>{
+                    <List.Item style={{marginTop: '20px'}}>
+                        <Card action={[<Icon type="stop"/>]}><Card.Meta description={item}/></Card>
+                    </List.Item>
+                }}
+            />
+            <List
+                style ={{marginBottom: '20px'}}
+                grid={{gutter:4, xs:2, md:3}}
+                size="small"
+                header={<div>팔로워 목록</div>}
+                loadMore={<Button style={{width:'100%'}}>더보기</Button>}
+                bordered
+                dataSource={['코몽','몽키','노드SNS']}
+                renderItem={item=>{
+                    <List.Item style={{marginTop: '20px'}}>
+                        <Card action={[<Icon type="stop"/>]}><Card.Meta description={item}/></Card>
+                    </List.Item>
+                }}
+            />
+            <div>프로필</div>
+        </div>
     );
     
 };

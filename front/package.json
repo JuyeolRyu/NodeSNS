@@ -4,25 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 3060",
     "build": "next build",
-    "start": "next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "next start"
   },
-  "author": "commong",
+  "author": "Commong",
   "license": "MIT",
   "dependencies": {
-    "antd": "^3.23.1",
-    "next": "^10.0.7",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "@ant-design/icons": "^4.2.2",
+    "antd": "^4.13.1",
+    "next": "^9.5.4",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-slick": "^0.27.11",
+    "styled-components": "^5.2.0"
   },
   "devDependencies": {
-    "eslint": "^7.21.0",
-    "nodemon": "^2.0.7",
-    "webpack": "^5.24.3",
+    "eslint": "^7.10.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0"
+    "eslint-plugin-react": "^7.21.3",
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "nodemon": "^2.0.4",
+    "webpack": "^4.44.2"
   }
 }
