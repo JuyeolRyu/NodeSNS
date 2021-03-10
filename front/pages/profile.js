@@ -1,40 +1,44 @@
 import React from 'react';
-import { Card, List,Input,Form,Icon,Button } from 'antd';
+import NicknameEditForm from '../components/NicknameEditForm';
+import { Card, List,Input,Form,Button } from 'antd';
+import { StopOutlined } from '@ant-design/icons';
 
 const Profile = () => {
     return (
         <div>
-            <Form style ={{ marginBottom: '20px', border: '1px solid #d9d9d9', padding: '20px'}}>
-                <Input addonBefore="닉네임"/>
-                <Button type="primary">수정</Button>
-            </Form>
+            <NicknameEditForm/>
+            
             <List
                 style ={{marginBottom: '20px'}}
                 grid={{gutter:4, xs:2, md:3}}
                 size="small"
                 header={<div>팔로잉 목록</div>}
-                loadMore={<Button style={{width:'100%'}}>더보기</Button>}
+                loadMore={<div style={{ textAlign: 'center', margin: '10px 0'}}><Button style={{width:'100%'}}>더보기</Button></div>}
                 bordered
-                dataSource={['코몽','몽키','노드SNS']}
-                renderItem={item=>{
+                dataSource= {[{nickname:'코몽'},{nickname:'몽키'},{nickname:'노드SNS'}]}
+                renderItem={ (item)=>(
                     <List.Item style={{marginTop: '20px'}}>
-                        <Card action={[<Icon type="stop"/>]}><Card.Meta description={item}/></Card>
+                        <Card actions={[<StopOutlined key="stop"/>]}>
+                            <Card.Meta description={item.nickname}/>
+                        </Card>
                     </List.Item>
-                }}
+                )}
             />
             <List
                 style ={{marginBottom: '20px'}}
                 grid={{gutter:4, xs:2, md:3}}
                 size="small"
-                header={<div>팔로워 목록</div>}
-                loadMore={<Button style={{width:'100%'}}>더보기</Button>}
+                header={<div>팔로잉 목록</div>}
+                loadMore={<div style={{ textAlign: 'center', margin: '10px 0'}}><Button style={{width:'100%'}}>더보기</Button></div>}
                 bordered
-                dataSource={['코몽','몽키','노드SNS']}
-                renderItem={item=>{
+                dataSource= {[{nickname:'코몽'},{nickname:'몽키'},{nickname:'노드SNS'}]}
+                renderItem={ (item)=>(
                     <List.Item style={{marginTop: '20px'}}>
-                        <Card action={[<Icon type="stop"/>]}><Card.Meta description={item}/></Card>
+                        <Card actions={[<StopOutlined key="stop"/>]}>
+                            <Card.Meta description={item.nickname}/>
+                        </Card>
                     </List.Item>
-                }}
+                )}
             />
             <div>프로필</div>
         </div>
