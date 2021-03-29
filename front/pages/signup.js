@@ -1,9 +1,17 @@
 import React,{useState,useCallback} from 'react';
-import Head from 'next/head';
 import {Form,Input,Checkbox,Button} from 'antd';
-import AppLayout from '../components/AppLayout';
+import PropTypes from 'prop-types';;
 import { useDispatch } from 'react-redux';
-const dispatch = useDispatch();
+import { signUpAction } from '../reducers/user';
+
+const TextInput = ({value}) => {
+    return (
+        <div>{value}</div>
+    )
+};
+TextInput.PropTypes = {
+    value: PropTypes.string,
+}
 
 /* 반복되는 useState와 이벤트리스너를 줄여주기 위해서 커스텀 훅 사용한다. 
     다른 곳에서 재사용하기 위해서 export
@@ -14,16 +22,18 @@ export const useInput = (initValue=null) => {
         setter(e.target.value);
     },[]);
     return [value,handler];
-}
+};
 const SingUp = () => {
-    const [id, onChangeId] = useInput('');
-    const [nick, onChangeNick] = useInput('');
-    const [password, onChangePassword] = useInput('');
     /* 커스텀훅으로 처리 안되는 useState */
     const [passwordCheck, setPasswordCheck] = useState('');
     const [term, setTerm] = useState(false);
     const [passwordError,setPasswordError] = useState(false);
     const [termError,setTermError] = useState(false);
+
+    const [id, onChangeId] = useInput('');
+    const [nick, onChangeNick] = useInput('');
+    const [password, onChangePassword] = useInput('');
+    const dispatch = useDispatch();
 
     const onSubmit = useCallback((e) =>{
         /* 제출 버튼 클릭시 실행되는 이벤트리스너 
