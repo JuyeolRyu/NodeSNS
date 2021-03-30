@@ -40,7 +40,7 @@ const SingUp = () => {
            password와 passwordCheck가 일치하지 않을 경우 패스워드 에러 반환
            동의 체크안했을 경우 에러 반환
         */
-        e.preventDefault();
+        //e.preventDefault();
         if(password !== passwordCheck){
             return setPasswordError(true);
         }
@@ -67,7 +67,7 @@ const SingUp = () => {
     },[]);
 
     return(
-        <Form onSubmit={onSubmit} style={{padding:10}}>
+        <Form onFinish={onSubmit} style={{padding:10}}>
             <div>
                 <label htmlFor="user-id">아이디</label>
                 <br/>
