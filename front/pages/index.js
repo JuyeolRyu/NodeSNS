@@ -14,6 +14,19 @@ const Home = () => {
     },[]);*/
     const {user,isLoggedIn} = useSelector((state)=> {return state.user});
     const {mainPosts} = useSelector((state) => {return state.post});
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+        dispatch({
+            type: 'HELLO_SAGA',
+        })
+        dispatch({
+            type: 'HELLO_SAGA',
+        })
+        dispatch({
+            type: 'HELLO_SAGA',
+        })
+    },[]);
     return (
         <div>
             {isLoggedIn ? <div> {user.nickname}님이 접속중입니다.</div> : <div>로그아웃 했습니다.</div>}
