@@ -1,8 +1,9 @@
-import React,{useState,useCallback} from 'react';
+import React,{useState,useCallback,useEffect} from 'react';
 import {Form,Input,Checkbox,Button} from 'antd';
 import PropTypes from 'prop-types';;
-import { useDispatch } from 'react-redux';
-import { signUpAction } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
+import Router from 'next/router';
+import { signUpRequestAction } from '../reducers/user';
 
 const TextInput = ({value}) => {
     return (
@@ -29,12 +30,18 @@ const SingUp = () => {
     const [term, setTerm] = useState(false);
     const [passwordError,setPasswordError] = useState(false);
     const [termError,setTermError] = useState(false);
-
     const [id, onChangeId] = useInput('');
     const [nick, onChangeNick] = useInput('');
     const [password, onChangePassword] = useInput('');
     const dispatch = useDispatch();
 
+    const {isSigningUp,me} = useSelector(state=>state.user);
+
+    useEffect(()=>{
+        if(me){
+            Router.push('/');
+        }
+    },[me && me.id]);
     const onSubmit = useCallback((e) =>{
         /* 제출 버튼 클릭시 실행되는 이벤트리스너 
            password와 passwordCheck가 일치하지 않을 경우 패스워드 에러 반환
@@ -50,7 +57,7 @@ const SingUp = () => {
         /* useCallback을 사용하면 아래의 dependency들이 변경될때  이벤트리스너함수가 재생성된다
            함수 내부에서 사용되는 state를 dependency에 넣어주면 된다.
         */
-       dispatch(signUpAction({
+       dispatch(signUpRequestAction({
            id,
            password,
            nick,
@@ -95,7 +102,7 @@ const SingUp = () => {
             </div>
             <div>
                 <div style={{marginTop:10}}></div>
-                <Button type="primary" htmlType="submit">가입하기</Button>
+                <Button type="primary" htmlType="submit" loading={isSigningUp}>가입하기</Button>
             </div>
         </Form>
     )

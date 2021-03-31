@@ -8,6 +8,7 @@ import AppLayout from '../components/AppLayout'
 import { applyMiddleware, compose, createStore } from 'redux';
 import reducer from '../reducers';
 import rootSaga from '../sagas';
+import { initialState } from '../reducers/user';
 /*헤더와 AppLayout 부분은 중복되는 부분이므로 렌더링을 줄이기 위해 next에서 제공하는 _app.js를 사용한다.
    _app.js 는 props로 Component를 받는데 이부분에 각각의 페이지 마다 다르게 적용될 부분이 들어간다.
 */
@@ -26,12 +27,11 @@ const NodeBird = ({Component}) => {
     );
 };
 NodeBird.propTypes = {
-    Component: propTypes.elementType,
-    store: propTypes.object,
+    Component: propTypes.elementType.isRequired,
+    store: propTypes.object.isRequired,
 }
 
-/* withRedux() ==> NodeBird에 store를 컴포넌트로 넣어주는 역할 */
-export default withRedux((initialState, options) => {
+const configureStore = (initialState,options)=>{
     const sagaMiddleware = createSagaMiddleware();
     const middlewares = [sagaMiddleware];
     const composeEnhancers =
@@ -41,12 +41,10 @@ export default withRedux((initialState, options) => {
         applyMiddleware(...middlewares),
     );
     
-    /*const enhancer = compose(
-        applyMiddleware(...middlewares),
-        typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE !== 'undefined' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__() : (f)=>f,
-    );*/
     const store = createStore(reducer, initialState, enhancer);
     sagaMiddleware.run(rootSaga)
     //여기에 store 커스터마이징
     return store;
-})(NodeBird);
+}
+/* withRedux() ==> NodeBird에 store를 컴포넌트로 넣어주는 역할 */
+export default withRedux(configureStore)(NodeBird);
