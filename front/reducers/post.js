@@ -1,24 +1,41 @@
 export const initialState = {
     mainPosts: [{
+        id:1,
         User:{
             id:1,
             nickname:'코몽',
         },
         content:'첫번째 게시물',
         img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt8o9EBlf1ZD0lBbJfUcC6wRJDcMZTw8oVQA&usqp=CAU',
+        Comments: [],
     }], //화면에 보일 포스트들
     imagePaths:[],//미리보기 이미지 경로
     addPostErrorReason: false,//포스트 업로드 실패 사유
     isAddingPost: false,//포스트업로드중
     postAdded: false,//포스트 업로드 성공
+    isAddingComment: false,
+    CommentAdded: false,
+    addCommentErrorReason: '',
 };
 
 const dummyPost = {
+    id:2,
     User: {
         id:1,
         nickname:'코몽',
     },
-    content: '더미데이터입니다.'
+    content: '더미포스트입니다.',
+    Comments: [],
+};
+
+const dummyComment = {
+    id:1,
+    User: {
+        id:2,
+        nickname:'불족발',
+    },
+    createdAt: new Date(),
+    content: '더미댓글입니다.',
 };
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
@@ -93,6 +110,34 @@ const reducer = (state = initialState,action) => {
                 ...state,
                 isAddingPost:false,
                 adPostErrorReason: action.error,
+            };
+        }
+        case ADD_COMMENT_REQUEST:{
+            return{
+                ...state,
+                isAddingComment:true,
+                addCommentErrorReason: '',
+                CommentAdded: false,
+            };
+        }
+        case ADD_COMMENT_SUCCESS:{
+            const postIndex = state.mainPosts.findIndex(v=>v.id === action.data.postId);
+            const post = state.mainPosts[postIndex];
+            const Comments = [...post.Comments, dummyComment];
+            const mainPosts = [...state.mainPosts];
+            mainPosts[postIndex] = {...post, Comments};
+            return{
+                ...state,
+                isAddingComment:false,
+                mainPosts,
+                CommentAdded: true,
+            };
+        }
+        case ADD_COMMENT_FAILURE:{
+            return{
+                ...state,
+                isAddingComment:false,
+                addCommentErrorReason: action.error,
             };
         }
         default:{
