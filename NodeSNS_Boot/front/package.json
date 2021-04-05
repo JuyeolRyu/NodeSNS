@@ -1,0 +1,21 @@
+{
+  "name": "react-nodebird-front2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next -p 3000",
+    "build": "next build",
+    "start": "next start"
+  },
+  "author": "commong",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "jquery": "^3.6.0",
+    "next": "^10.1.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-slick": "^0.28.1"
+  }
+}
