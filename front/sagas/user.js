@@ -2,21 +2,22 @@ import { all, call, fork, put, take, takeLatest, takeEvery, delay } from "@redux
 import {LOG_IN_REQUEST,LOG_IN_SUCCESS,LOG_IN_FAILURE,SIGN_UP_REQUEST,SIGN_UP_SUCCESS,SIGN_UP_FAILURE } from '../reducers/user';
 import axios from 'axios';
 
-function* loginAPI(){
+axios.defaults.baseURL = 'http://localhost:3065/api';
+function* loginAPI(loginData){
     //서버에 로그인 요청 보내는 코드
-    return axios.postA('/login');
+    return axios.post('/user/login',loginData);
 }
-function* signUpAPI(){
-    return axios.postA('/login');
+function* signUpAPI(signUpData){
+    return axios.post('/user/',signUpData);
 }
-function* login(){
+function* login(action){
     try{
         //서버에 loginAPI 요청 보냄
-        yield delay(2000);
-        //yield call(loginAPI);
+        const result = yield call(loginAPI,action.data);//로그인된 사용자 정보 result로 받음
         //로그인 성공시
         yield put({ //put 은 dispatch 와 동일한 기능을 한다
             type: LOG_IN_SUCCESS,
+            data: result.data,
         })
     }catch(e){
         //로그인 실패시
@@ -26,13 +27,9 @@ function* login(){
         })
     }
 }
-function* signUp(){
+function* signUp(action){
     try{
-        //서버에 loginAPI 요청 보냄
-        //yield call(signUpAPI);
-        yield delay(2000);
-        throw new Error('에러에러에러');
-        //로그인 성공시
+        yield call(signUpAPI,action.data);
         yield put({ //put 은 dispatch 와 동일한 기능을 한다
             type: SIGN_UP_SUCCESS,
         })

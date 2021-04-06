@@ -42,12 +42,12 @@ const SingUp = () => {
             Router.push('/');
         }
     },[me && me.id]);
-    const onSubmit = useCallback((e) =>{
+    const onSubmit = useCallback(() =>{
         /* 제출 버튼 클릭시 실행되는 이벤트리스너 
            password와 passwordCheck가 일치하지 않을 경우 패스워드 에러 반환
            동의 체크안했을 경우 에러 반환
         */
-        //e.preventDefault();
+        console.log('submit');
         if(password !== passwordCheck){
             return setPasswordError(true);
         }
@@ -57,12 +57,12 @@ const SingUp = () => {
         /* useCallback을 사용하면 아래의 dependency들이 변경될때  이벤트리스너함수가 재생성된다
            함수 내부에서 사용되는 state를 dependency에 넣어주면 된다.
         */
-       dispatch(signUpRequestAction({
-           id,
+       return dispatch(signUpRequestAction({
+           userId: id,
            password,
-           nick,
+           nickname: nick,
        }));
-    },[password,passwordCheck,term]);
+    },[id, nick, password,passwordCheck,term]);
 
     const onChangePasswordCheck = useCallback((e) =>{
         setPasswordError(e.target.value !== password);
