@@ -21,7 +21,10 @@ passportConfig();//passport 전략 여기서 연결
 app.use(morgan('dev'));//요청 들어오면 동작
 app.use(express.json());//json 형식의 본문 처리
 app.use(express.urlencoded({extended: true}));//form으로 넘어온 데이터 처리
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',//이 주소에서의 접근 허락(true 이면 모두 허락)
+    credentials: true,
+}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(expressSession({
     //위의 두가지 속성은 무조건 포함
@@ -31,7 +34,8 @@ app.use(expressSession({
     cookie: {
         httpOnly: true,//쿠키에 자바스크립트로 접근 못하게
         secure: false,//https를 사용할때 true로 바꿔준다
-    }
+    },
+    name:'rnbck',
 }));
 app.use(passport.initialize());//passport 는 express-session보다 아래에 적어줘야 한다.
 app.use(passport.session());//passport 내부에서 express-session을 사용하기 때문에

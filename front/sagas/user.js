@@ -3,11 +3,13 @@ import {LOG_IN_REQUEST,LOG_IN_SUCCESS,LOG_IN_FAILURE,SIGN_UP_REQUEST,SIGN_UP_SUC
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3065/api';
-function* loginAPI(loginData){
+function loginAPI(loginData){
     //서버에 로그인 요청 보내는 코드
-    return axios.post('/user/login',loginData);
+    return axios.post('/user/login',loginData, {
+        withCredentials: true,//쿠키를 주고 받을수 있게 해줌(서버쪽은 따로 해줘야함)
+    });
 }
-function* signUpAPI(signUpData){
+function signUpAPI(signUpData){
     return axios.post('/user/',signUpData);
 }
 function* login(action){

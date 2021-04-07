@@ -3,7 +3,7 @@ import {Form,Input,Checkbox,Button} from 'antd';
 import PropTypes from 'prop-types';;
 import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
-import { signUpRequestAction } from '../reducers/user';
+import { signUpRequestAction, SIGN_UP_REQUEST } from '../reducers/user';
 
 const TextInput = ({value}) => {
     return (
@@ -57,11 +57,14 @@ const SingUp = () => {
         /* useCallback을 사용하면 아래의 dependency들이 변경될때  이벤트리스너함수가 재생성된다
            함수 내부에서 사용되는 state를 dependency에 넣어주면 된다.
         */
-       return dispatch(signUpRequestAction({
-           userId: id,
-           password,
-           nickname: nick,
-       }));
+        return dispatch({
+            type:SIGN_UP_REQUEST,
+            data: {
+                userId:id,
+                password,
+                nickname: nick,
+            },
+        });
     },[id, nick, password,passwordCheck,term]);
 
     const onChangePasswordCheck = useCallback((e) =>{

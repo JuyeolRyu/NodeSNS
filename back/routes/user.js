@@ -52,7 +52,8 @@ router.post('/login', (req,res, next) => {
             if(loginErr){
                 return next(loginErr);
             }
-            const filtereduser = Object.assign({},user.toJSON());
+            const filtereduser = Object.assign({},user.dataValues);
+            console.log(filtereduser);
             delete filtereduser.password;//패스워드가 프론트에 보여지면 안되므로 제거해준다.
             return res.json(filtereduser);//프론트에 사용자 정보 보내줌
         });
