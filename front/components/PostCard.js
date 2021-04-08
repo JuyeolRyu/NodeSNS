@@ -35,6 +35,7 @@ const PostCard = ({post}) => {
     const onChangeCommentText = useCallback((e) => {
         setCommentText(e.target.value)
     },[]);
+    console.log(post)
     return(
         <div>
         <Card

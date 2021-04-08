@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes)=> {
     });
     HashTag.associate = (db) => {
         //다대다 관계 중간에 테이블이 하나 생긴다.
-        db.HashTag.belongsMany(db.Post,{through: 'PostHashTag'});
+        db.HashTag.belongsToMany(db.Post,{through: 'PostHashTag'});
     };
     return HashTag;
 };

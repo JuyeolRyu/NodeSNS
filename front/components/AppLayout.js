@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import propTypes from 'prop-types';
 import {Menu,Input,Row,Col} from 'antd';
 import LoginForm from './LoginForm';
 import UserProfile from './UserProfile';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {LOAD_USER_REQUEST} from '../reducers/user';
 const AppLayout = ({children}) =>{
-    const {isLoggedIn} = useSelector((state)=>{return state.user});
+    const {me} = useSelector((state)=>{return state.user});
+    const dispatch = useDispatch();
+    useEffect(()=>{
+        dispatch({
+            type: LOAD_USER_REQUEST,
+        });
+    },[]);
     return(
         <div>
             <Menu mode="horizontal">
@@ -21,7 +28,7 @@ const AppLayout = ({children}) =>{
                     24면 한칸 전부 차지, 12면 절반, 6이면 1/4
                 */}
                 <Col xs={24} md={6}>
-                    {isLoggedIn
+                    {me
                         ?<UserProfile/>
                         :<LoginForm/>
                     }
