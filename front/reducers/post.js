@@ -149,7 +149,7 @@ const reducer = (state = initialState,action) => {
         case LOAD_MAIN_POSTS_SUCCESS:{
             return{
                 ...state,
-                mainPosts: [action.data],
+                mainPosts: action.data,
             };
         }
         case LOAD_MAIN_POSTS_FAILURE:{

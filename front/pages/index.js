@@ -14,13 +14,13 @@ const Home = () => {
             type:LOAD_MAIN_POSTS_REQUEST,
         })
     },[]);
-    
 
     return (
         <div>
             {me ? <div> {me.nickname}님이 접속중입니다.</div> : <div>로그아웃 했습니다.</div>}
             {me && <PostForm/>}
             {mainPosts.map((c)=>{
+                //console.log(c);
                 return(
                     <PostCard key={c} post={c}/>
                 )

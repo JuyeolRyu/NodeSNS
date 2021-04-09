@@ -10,12 +10,14 @@ router.post('/', async (req,res,next) => {
             UserId: req.user.id,
         });
         if(hashtags){
+            console.log('hashtag');
             const result = await Promise.all(hashtags.map(tag=>db.HashTag.findOrCreate({//없으면 만들고 있으면 찾고
-                where:{name:tag.slice(1).toLowerCase},//slice ==> #때기, 영어는 소문자로
+                where:{ name : tag.slice(1).toLowerCase() },//slice ==> #때기, 영어는 소문자로
             })));
             console.log(result);
-            await newPost.addHashtags(result.map(r=>r[0]));//addHashtags ==> 시퀄라이저가 만들어줌
+            await newPost.addHashTags(result.map(r=>r[0]));//addHashtags ==> 시퀄라이저가 만들어줌
         }
+        console.log('post 했음');
         //const User = await newPost.getUser();
         //newPost.User = User;
         //res.json(newPost);

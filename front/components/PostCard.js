@@ -1,4 +1,5 @@
 import React,{useState,useCallback,useEffect} from 'react';
+import Link from 'next/link';
 import {Card,Button,Avatar, Input,Form,List,Comment} from 'antd';
 import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
 import propTypes from 'prop-types';
@@ -32,10 +33,11 @@ const PostCard = ({post}) => {
     useEffect(()=>{
         setCommentText('');
     },[CommentAdded === true])
+
     const onChangeCommentText = useCallback((e) => {
         setCommentText(e.target.value)
     },[]);
-    console.log(post)
+
     return(
         <div>
         <Card
@@ -50,9 +52,20 @@ const PostCard = ({post}) => {
             extra={<Button>팔로우</Button>}
         >
             <Card.Meta
-                avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+                avatar={<Avatar>{post.User.nickname}</Avatar>}
                 title={post.User.nickname}
-                description={post.content}
+                description={
+                    <div>
+                        {post.content.split(/(#[^\s]+)/g).map((v) => {
+                            if(v.match(/(#[^\s]+)/g)){
+                                return(
+                                    <Link href="/hashtag"><a>{v}</a></Link>
+                                )
+                            }
+                            return v;
+                        })}
+                    </div>
+                }//해시태그 링크는 Link태그로 사용
             />
         </Card>
             {/* 댓글 입력창 댓글리스트 */}

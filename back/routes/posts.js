@@ -9,6 +9,7 @@ router.get('/', async(req,res,next) => {
                 model: db.User,
                 attributes: ['id','nickname'],
             }],
+            order: [['createdAt', 'DESC']],
         });
         res.json(posts);
     }catch(e){
