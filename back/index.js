@@ -22,7 +22,7 @@ app.use(morgan('dev'));//요청 들어오면 동작
 app.use(express.json());//json 형식의 본문 처리
 app.use(express.urlencoded({extended: true}));//form으로 넘어온 데이터 처리
 app.use(cors({
-    origin: 'http://localhost:3000',//이 주소에서의 접근 허락(true 이면 모두 허락)
+    origin: true,//이 주소에서의 접근 허락(true 이면 모두 허락)
     credentials: true,
 }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
