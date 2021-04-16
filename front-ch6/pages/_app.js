@@ -13,7 +13,7 @@ import { initialState } from '../reducers/user';
    _app.js 는 props로 Component를 받는데 이부분에 각각의 페이지 마다 다르게 적용될 부분이 들어간다.
 */
 
-const NodeBird = ({Component,store, pageProps}) => {
+const NodeBird = ({Component,pageProps }) => {
     return (
         <>
             <Head>
@@ -28,12 +28,11 @@ const NodeBird = ({Component,store, pageProps}) => {
 };
 NodeBird.propTypes = {
     Component: propTypes.elementType.isRequired,
-    store: propTypes.object.isRequired,
+    store: propTypes.object,
     pageProps: propTypes.object.isRequired,
 }
 NodeBird.getInitialProps = async(context) => {
     //Component ==> pages 폴더에있는 페이지들
-    console.log(context);
     const {ctx, Component} = context;
     let pageProps = {};
     //만약 Component에 getInitialProps가 있으면 실행해주겠다

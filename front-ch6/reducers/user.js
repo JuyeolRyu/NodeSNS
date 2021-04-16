@@ -118,6 +118,10 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 me: action.data,
             };
+            return {
+                ...state,
+                userInfo
+            }
         }
         case LOAD_USER_FAILURE:{
             return{

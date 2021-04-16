@@ -1,5 +1,5 @@
 import React,{useEffect} from 'react';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 import { LOAD_USER_POSTS_REQUEST} from '../../front/reducers/post';
 import PostCard from '../components/PostCard';
@@ -7,9 +7,9 @@ import {Card,Avatar} from 'antd';
 import { LOAD_USER_REQUEST } from '../reducers/user';
 
 const User = ({id}) => {
-    const dispatch = useDispatch();
     const {mainPosts} = useSelector(state=> state.post);
     const {userInfo} = useSelector(state=> state.user);
+    const dispatch = useDispatch();
     useEffect(() => {
         dispatch({
             type: LOAD_USER_REQUEST,
@@ -43,8 +43,8 @@ const User = ({id}) => {
         </div>
     );
 };
-User.PropTypes = {
-    id: PropTypes.number.isRequired,
+User.propTypes = {
+    id: propTypes.number.isRequired,
 }
 User.getInitialProps = async(context) => {//가장 먼저 실행된다. 서버와 프론트 둘다에서 실행된다.
     console.log('User getInitialProps', context.query.id);//서버에서 데이터 받아오기
