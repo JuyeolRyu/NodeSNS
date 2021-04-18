@@ -4,7 +4,7 @@ import {Card,Button,Avatar, Input,Form,List,Comment} from 'antd';
 import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
 import propTypes from 'prop-types';
 import {useSelector, useDispatch} from 'react-redux';
-import {ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS,ADD_COMMENT_FAILURE} from '../reducers/post';
+import {ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS,ADD_COMMENT_FAILURE, LOAD_COMMENTS_REQUEST} from '../reducers/post';
 
 const PostCard = ({post}) => {
     const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -15,20 +15,27 @@ const PostCard = ({post}) => {
 
     const onToggleComment = useCallback(() => {
         setCommentFormOpened(prev => !prev);
-    });
+        if(!commentFormOpened){
+            dispatch({
+                type: LOAD_COMMENTS_REQUEST,
+                data: post.id,
+            });
+        }
+    },[]);
 
     const onSubmitComment =useCallback((e) => {
         //e.preventDefault();
         if(!me){
             return alert('로그인이 필요합니다.');
         }
-        dispatch({
+        return dispatch({
             type:ADD_COMMENT_REQUEST,
             data: {
-                postId:post.id,
+                postId: post.id,
+                content:commentText,
             }
         });
-    },[me && me.id]);
+    },[me && me.id, commentText]);
 
     useEffect(()=>{
         setCommentText('');
@@ -52,14 +59,23 @@ const PostCard = ({post}) => {
             extra={<Button>팔로우</Button>}
         >
             <Card.Meta
-                avatar={<Avatar>{post.User.nickname}</Avatar>}
+                //href={'user/${post.User.id}'} ==> 이건 서버딴에서 렌더링 되므로 전체 페이지가 렌더링 된다.
+                //프론트에서 처리 가능하도록 아래처럼 변경
+                avatar={(
+                    <Link href={{pathname: '/user', query: {id: post.User.id}}} as={'user/${post.User.id}'}>
+                        <a><Avatar>{post.User.nickname}</Avatar></a>
+                    </Link>
+                )}
                 title={post.User.nickname}
                 description={
                     <div>
                         {post.content.split(/(#[^\s]+)/g).map((v) => {
                             if(v.match(/(#[^\s]+)/g)){
                                 return(
-                                    <Link href={`/hashtag/${v.slice(1)}`} key={v}><a>{v}</a></Link>
+                                    //href={`/hashtag/${v.slice(1)}`}
+                                    <Link href={{pathname:'/hashtag', query: {tag:v.slice(1)}}} as={`/hashtag/${v.slice(1)}`} key={v}>
+                                        <a>{v}</a>
+                                    </Link>
                                 )
                             }
                             return v;
@@ -85,7 +101,11 @@ const PostCard = ({post}) => {
                             <li>
                                 <Comment
                                     author={item.User.nickname}
-                                    avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                                    avatar={(
+                                        <Link href={{pathname:'/user', query:{id:item.User.id}}} as={`/user/${item.User.id}`}>
+                                            <a><Avatar>{item.User.nickname[0]}</Avatar></a>
+                                        </Link>
+                                    )}
                                     content={item.content}
                                 />
                             </li>
