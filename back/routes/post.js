@@ -50,6 +50,7 @@ router.get('/:id/comments', async(req,res,next) => {
                 attributes:['id', 'nickname'],
             }],
         });
+        console.log(comments);
         res.json(comments);
     }catch(e){
         console.error(e);
