@@ -2,13 +2,11 @@ const express = require('express');
 const bycrypt = require('bcrypt');
 const db = require('../models');
 const passport = require('passport');
+const { isLoggedIn } = require('./middleware');
 
 const router = express.Router();
 
-router.get('/', async (req,res) => {
-    if(!req.user){
-        return res.status(401).send('로그인이 필요합니다.')
-    }
+router.get('/', isLoggedIn, async (req,res) => {
     const fullUser = await db.User.findOne({
         where: {id: req.user.id},
         include:[{
@@ -144,8 +142,6 @@ router.delete('/:id/follower', (req,res) => {
     
 })
 router.get('/:id/posts',  async (req,res,next) => {
-    console.log(req.params.id)
-    console.log(parseInt(req.params.id, 10))
     try{
         const posts = await db.Post.findAll({
             where: {
@@ -157,7 +153,6 @@ router.get('/:id/posts',  async (req,res,next) => {
                 attributes: ['id','nickname'],
             }],
         });
-        console.log(posts)
         res.json(posts);
     }catch(e){
 

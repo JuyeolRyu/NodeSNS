@@ -89,7 +89,7 @@ const reducer = (state = initialState,action) => {
                 ...state,
                 isAddingComment:true,
                 addCommentErrorReason: '',
-                commentAdded: false,
+                CommentAdded: false,
             };
         }
         case ADD_COMMENT_SUCCESS:{
@@ -102,7 +102,7 @@ const reducer = (state = initialState,action) => {
                 ...state,
                 isAddingComment:false,
                 mainPosts,
-                commentAdded: true,
+                CommentAdded: true,
             };
         }
         case ADD_COMMENT_FAILURE:{
@@ -141,6 +141,22 @@ const reducer = (state = initialState,action) => {
         case LOAD_MAIN_POSTS_FAILURE:
         case LOAD_USER_POSTS_FAILURE:
         case LOAD_HASHTAG_POSTS_FAILURE:{
+            return{
+                ...state,
+            };
+        }
+        case UPLOAD_IMAGES_REQUEST:{
+            return{
+                ...state,
+            };
+        }
+        case UPLOAD_IMAGES_SUCCESS:{
+            return{
+                ...state,
+                imagePaths: [...state.imagePaths, ...action.data],
+            };
+        }
+        case UPLOAD_IMAGES_FAILURE:{
             return{
                 ...state,
             };
