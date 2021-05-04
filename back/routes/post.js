@@ -69,7 +69,7 @@ router.post('/:id/comment', async(req,res,next) => {
         }
         const newComment = await db.Comment.create({
             PostId: post.id,
-            User: req.user.id,
+            UserId: req.user.id,
             content: req.body.content,
         });
         await post.addComment(newComment.id);//댓글과 post 이어 주기

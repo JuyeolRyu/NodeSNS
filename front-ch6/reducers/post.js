@@ -89,7 +89,7 @@ const reducer = (state = initialState,action) => {
                 ...state,
                 isAddingComment:true,
                 addCommentErrorReason: '',
-                CommentAdded: false,
+                commentAdded: false,
             };
         }
         case ADD_COMMENT_SUCCESS:{
@@ -102,7 +102,7 @@ const reducer = (state = initialState,action) => {
                 ...state,
                 isAddingComment:false,
                 mainPosts,
-                CommentAdded: true,
+                commentAdded: true,
             };
         }
         case ADD_COMMENT_FAILURE:{

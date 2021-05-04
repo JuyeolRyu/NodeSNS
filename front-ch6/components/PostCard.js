@@ -97,10 +97,7 @@ const PostCard = ({post}) => {
                         header={`${post.Comments ? post.Comments.length: 0} 댓글`}
                         itemLayout="horizontal"
                         dataSource={post.Comments || []}
-                        renderItem={item => {
-                            console.log(item);
-                            (
-                            
+                        renderItem={item => (
                             <li>
                                 <Comment
                                     author={item.User.nickname}
@@ -112,7 +109,7 @@ const PostCard = ({post}) => {
                                     content={item.content}
                                 />
                             </li>
-                        )}}
+                        )}
                     />
                 </>
             )}
