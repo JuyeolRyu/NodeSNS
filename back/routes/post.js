@@ -5,35 +5,8 @@ const db = require('../models');
 const { isLoggedIn } = require('./middleware');
 const router = express.Router();
 
-router.post('/', isLoggedIn, async (req,res,next) => {
-    try{
-        const hashtags = req.body.content.match(/#[^\s]+/g);
-        const newPost = await db.Post.create({
-            content: req.body.content,
-            UserId: req.user.id,
-        });
-        if(hashtags){
-            const result = await Promise.all(hashtags.map(tag=>db.HashTag.findOrCreate({//없으면 만들고 있으면 찾고
-                where:{ name : tag.slice(1).toLowerCase() },//slice ==> #때기, 영어는 소문자로
-            })));
-            console.log(result);
-            await newPost.addHashTags(result.map(r=>r[0]));//addHashtags ==> 시퀄라이저가 만들어줌
-        }
-        console.log('post 했음');
-
-        const fullPost = await db.Post.findOne({
-            where: {id: newPost.id},
-            include: [{
-                model:db.User,
-            }],
-        });
-        res.json(fullPost);
-    }catch(e){
-        console.error(e);
-        next(e);
-    }
-});
 //multer 미들웨어 업로드 설정
+//폼데이터 파일 => req.file, 폼데이터 일반값(text) => req.body
 const upload = multer({
     storage: multer.diskStorage({//저장 위치 설정하는 속성 diskStorage===디스크, 이외에도 클라우드도 있다
         destination(req,file,done){//저장위치 설정
@@ -47,6 +20,47 @@ const upload = multer({
     }),
     limits: {fileSize: 20*1024*1024},//파일 크기 제한(공격방지)
 })
+
+router.post('/', isLoggedIn, upload.none(), async (req,res,next) => {
+    try{
+        const hashtags = req.body.content.match(/#[^\s]+/g);
+        const newPost = await db.Post.create({
+            content: req.body.content,
+            UserId: req.user.id,
+        });
+        if(hashtags){
+            const result = await Promise.all(hashtags.map(tag=>db.HashTag.findOrCreate({//없으면 만들고 있으면 찾고
+                where:{ name : tag.slice(1).toLowerCase() },//slice ==> #때기, 영어는 소문자로
+            })));
+            console.log(result);
+            await newPost.addHashTags(result.map(r=>r[0]));//addHashtags ==> 시퀄라이저가 만들어줌
+        }
+        if(req.body.image){//post 에 이미지 추가
+            if(Array.isArray(req.body.image)){//이미지 주소룰 여러개 올린 경우
+                const images = await Promise.all(req.body.image.map((image)=>{
+                    return db.Image.create({src:image});
+                }))
+                await newPost.addImages(images);
+            }else{//이미지 한개만 올린 경우
+                const image = await db.Image.create({src: req.body.image});
+                await newPost.addImage(image);
+            }
+        }
+        const fullPost = await db.Post.findOne({
+            where: {id: newPost.id},
+            include: [{
+                model:db.User,
+            },{
+                model: db.Image,
+            }],
+        });
+        res.json(fullPost);
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
+
 router.post('/images', upload.array('image'), (req,res) => {//이미지 여러장 올릴 경우를 위해 .array사용
     console.log(req.files);
     res.json(req.files.map(v => v.filename));

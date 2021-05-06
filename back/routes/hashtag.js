@@ -12,7 +12,9 @@ router.get('/:tag', async (req, res, next) => {
         where: { name: decodeURIComponent(req.params.tag) },//한글,특수문자 주소를 표현해 주기 decodeURIComponent 사용
       },{ //게시글 작성자 정보
         model: db.User,
-      }],
+      },{
+        model: db.Image,
+    }],
     });
     console.log(posts)
     res.json(posts);

@@ -53,7 +53,7 @@ export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
-const REMOVE_IMAGE = 'REMOVE_IMAGE';
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 export const addPost = {
     type:ADD_POST_REQUEST,
@@ -61,6 +61,12 @@ export const addPost = {
 
 const reducer = (state = initialState,action) => {
     switch(action.type){
+        case REMOVE_IMAGE:{
+            return {
+                ...state,
+                imagePaths: state.imagePaths.filter((v,i)=> i !== action.index),
+            };
+        }
         case ADD_POST_REQUEST:{
             return{
                 ...state,
@@ -75,6 +81,7 @@ const reducer = (state = initialState,action) => {
                 isAddingPost:false,
                 mainPosts: [action.data, ...state.mainPosts],
                 postAdded: true,
+                imagePaths: [],
             };
         }
         case ADD_POST_FAILURE:{

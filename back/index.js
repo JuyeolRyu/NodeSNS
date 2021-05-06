@@ -20,6 +20,7 @@ db.sequelize.sync();
 passportConfig();//passport 전략 여기서 연결
 
 app.use(morgan('dev'));//요청 들어오면 동작
+app.use('/',express.static('uploads'));//uploads 폴더 안에 서버가 접근해서 가져갈수 있도록 함(uploads == 루트폴더로 생각하겠다)
 app.use(express.json());//json 형식의 본문 처리
 app.use(express.urlencoded({extended: true}));//form으로 넘어온 데이터 처리
 app.use(cors({
