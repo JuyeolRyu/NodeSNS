@@ -38,6 +38,7 @@ const PostImages = ({images})=> {
                 {images.length-1}
                 개의 사진 더보기
             </div>
+            {showImagesZoom && <ImagesZoom images={images} onClose={onClose}/>}
         </div>
     );
 }
