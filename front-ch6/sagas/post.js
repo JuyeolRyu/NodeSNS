@@ -1,8 +1,62 @@
 import { all, delay, fork, put, takeLatest, call } from "@redux-saga/core/effects";
 import axios from "axios";
-import {ADD_POST_REQUEST,ADD_POST_SUCCESS,ADD_POST_FAILURE,ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,LOAD_MAIN_POSTS_REQUEST,LOAD_MAIN_POSTS_SUCCESS,
+import {UNLIKE_POST_REQUEST,UNLIKE_POST_SUCCESS,UNLIKE_POST_FAILURE,LIKE_POST_REQUEST,LIKE_POST_SUCCESS,LIKE_POST_FAILURE,ADD_POST_REQUEST,ADD_POST_SUCCESS,ADD_POST_FAILURE,ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE,LOAD_MAIN_POSTS_REQUEST,LOAD_MAIN_POSTS_SUCCESS,
     LOAD_MAIN_POSTS_FAILURE,LOAD_HASHTAG_POSTS_REQUEST,LOAD_HASHTAG_POSTS_SUCCESS,LOAD_HASHTAG_POSTS_FAILURE,LOAD_USER_POSTS_REQUEST,LOAD_USER_POSTS_SUCCESS,LOAD_USER_POSTS_FAILURE,
     LOAD_COMMENTS_REQUEST,LOAD_COMMENTS_SUCCESS, LOAD_COMMENTS_FAILURE, UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_SUCCESS, UPLOAD_IMAGES_FAILURE} from '../reducers/post';
+
+function unlikePostAPI(postId) {
+    return axios.delete(`/post/${postId}/like`, {
+        withCredentials: true,
+    });
+}
+function* unlikePost(action){
+    try{
+        const result = yield call(unlikePostAPI, action.data);
+        console.log(result)
+        yield put({
+            type: UNLIKE_POST_SUCCESS,
+            data:{
+                postId: action.data,
+                userId: result.data.userId,
+            }
+        });
+    }catch(e){
+        yield put({
+            type:UNLIKE_POST_FAILURE,
+            error: e
+        })
+    }
+}
+function* watchUnlikePost(){
+    yield takeLatest(UNLIKE_POST_REQUEST,unlikePost);
+}
+
+function likePostAPI(postId) {
+return axios.post(`/post/${postId}/like`, {},{
+    withCredentials: true,
+})
+}
+function* likePost(action){
+    try{
+        const result = yield call(likePostAPI, action.data);
+        console.log(result)
+        yield put({
+            type: LIKE_POST_SUCCESS,
+            data:{
+                postId: action.data,
+                userId: result.data.userId,
+            }
+        });
+    }catch(e){
+        yield put({
+            type:LIKE_POST_FAILURE,
+            error: e
+        })
+    }
+}
+function* watchLikePost(){
+    yield takeLatest(LIKE_POST_REQUEST,likePost);
+}
 
 function addPostAPI(postData) {
     return axios.post('/post', postData, {
@@ -176,5 +230,7 @@ export default function* postSaga(){
         fork(watchLoadHashtagPosts),
         fork(watchLoadUserPosts),
         fork(watchUploadImages),
+        fork(watchLikePost),
+        fork(watchUnlikePost),
     ]);
 }

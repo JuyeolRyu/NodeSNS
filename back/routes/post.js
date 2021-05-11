@@ -29,11 +29,11 @@ router.post('/', isLoggedIn, upload.none(), async (req,res,next) => {
             UserId: req.user.id,
         });
         if(hashtags){
-            const result = await Promise.all(hashtags.map(tag=>db.HashTag.findOrCreate({//없으면 만들고 있으면 찾고
+            const result = await Promise.all(hashtags.map(tag=>db.Hashtag.findOrCreate({//없으면 만들고 있으면 찾고
                 where:{ name : tag.slice(1).toLowerCase() },//slice ==> #때기, 영어는 소문자로
             })));
             console.log(result);
-            await newPost.addHashTags(result.map(r=>r[0]));//addHashtags ==> 시퀄라이저가 만들어줌
+            await newPost.addHashtags(result.map(r=>r[0]));//addHashtags ==> 시퀄라이저가 만들어줌
         }
         if(req.body.image){//post 에 이미지 추가
             if(Array.isArray(req.body.image)){//이미지 주소룰 여러개 올린 경우
@@ -118,5 +118,33 @@ router.post('/:id/comment', isLoggedIn, async(req,res,next) => {
         return next(e);
     }
 })
+//좋아요
+router.post('/:id/like',isLoggedIn, async(req,res,next)=>{
+    try{
+        const post = await db.Post.findOne({where: {id: req.params.id}});
+        if(!post){
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        await post.addLiker(req.user.id);
+        res.json({userId:req.user.id});
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
 
+
+router.delete('/:id/like',isLoggedIn, async(req,res,next)=>{
+    try{
+        const post = await db.Post.findOne({where: {id: req.params.id}});
+        if(!post){
+            return res.status(404).send('포스트가 존재하지 않습니다.');
+        }
+        await post.removeLiker(req.user.id);
+        res.json({userId:req.user.id});
+    }catch(e){
+        console.error(e);
+        next(e);
+    }
+});
 module.exports = router;

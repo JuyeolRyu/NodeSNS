@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes)=> {
-    const HashTag = sequelize.define('HashTag',{
+    const Hashtag = sequelize.define('Hashtag',{
         name: {
             type: DataTypes.STRING(20),
             allowNull: false,
@@ -8,9 +8,9 @@ module.exports = (sequelize, DataTypes)=> {
         charset: 'utf8mb4',
         clooate: 'utf8mb4_general_cli',
     });
-    HashTag.associate = (db) => {
+    Hashtag.associate = (db) => {
         //다대다 관계 중간에 테이블이 하나 생긴다.
-        db.HashTag.belongsToMany(db.Post,{through: 'PostHashTag'});
+        db.Hashtag.belongsToMany(db.Post,{through: 'PostHashtag'});
     };
-    return HashTag;
+    return Hashtag;
 };

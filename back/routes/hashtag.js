@@ -8,13 +8,19 @@ router.get('/:tag', async (req, res, next) => {
   try {
     const posts = await db.Post.findAll({
       include: [{
-        model: db.HashTag,
+        model: db.Hashtag,
         where: { name: decodeURIComponent(req.params.tag) },//한글,특수문자 주소를 표현해 주기 decodeURIComponent 사용
       },{ //게시글 작성자 정보
         model: db.User,
+        attributes:['id','nickname'],
       },{
         model: db.Image,
-    }],
+      },{
+        model: db.User,
+        through: 'Like',
+        as: 'Likers',
+        attributes: ['id'],
+      }],
     });
     console.log(posts)
     res.json(posts);

@@ -1,10 +1,11 @@
 import React,{useState,useCallback,useEffect} from 'react';
 import Link from 'next/link';
 import {Card,Button,Avatar, Input,Form,List,Comment} from 'antd';
-import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { RetweetOutlined, HeartTwoTone,HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { getTwoToneColor, setTwoToneColor } from '@ant-design/icons';
 import propTypes from 'prop-types';
 import {useSelector, useDispatch} from 'react-redux';
-import {ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS,ADD_COMMENT_FAILURE, LOAD_COMMENTS_REQUEST} from '../reducers/post';
+import {ADD_COMMENT_REQUEST,LOAD_COMMENTS_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST} from '../reducers/post';
 import PostImages from './PostImages';
 
 const PostCard = ({post}) => {
@@ -13,6 +14,10 @@ const PostCard = ({post}) => {
     const {me} = useSelector(state=>state.user);
     const {CommentAdded,isAddingComment} = useSelector(state=>state.post);
     const dispatch = useDispatch();
+
+    const liked = me && post.Likers && post.Likers.find(v=> v.id ===me.id);
+    setTwoToneColor('#eb2f96');
+    getTwoToneColor(); // #eb2f96
 
     const onToggleComment = useCallback(() => {
         setCommentFormOpened(prev => !prev);
@@ -46,6 +51,22 @@ const PostCard = ({post}) => {
         setCommentText(e.target.value)
     },[]);
 
+    const onToggleLike = useCallback(() => {
+        if(!me){
+            return alert('로그인이 필요합니다');
+        }
+        if(liked){//좋아요 누른 상태
+            dispatch({
+                type: UNLIKE_POST_REQUEST,
+                data: post.id,
+            });
+        }else{//누르지 않은 상태
+            dispatch({
+                type: LIKE_POST_REQUEST,
+                data: post.id,
+            });
+        }
+    },[me && me.id, post && post.id,liked]);
     return(
         <div>
         <Card
@@ -53,7 +74,9 @@ const PostCard = ({post}) => {
             cover={post.Images[0] && <PostImages images={post.Images}/>}
             actions={[
                 <RetweetOutlined key="retweet" />,
-                <HeartOutlined key="heart" />,
+                liked
+                ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
+                : <HeartOutlined key="heart" onClick={onToggleLike} />,
                 <MessageOutlined key="message" onClick={onToggleComment}/>,
                 <EllipsisOutlined key="eclipsis" />,
             ]}
