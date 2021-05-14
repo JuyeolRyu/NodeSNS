@@ -5,7 +5,6 @@ import {useDispatch,useSelector} from 'react-redux';
 import { LOAD_MAIN_POSTS_REQUEST } from '../reducers/post';
 
 const Home = () => {
-
     const {me} = useSelector((state)=> {return state.user});
     const {mainPosts} = useSelector((state) => {return state.post});
     const dispatch = useDispatch();

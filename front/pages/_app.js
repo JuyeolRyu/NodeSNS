@@ -13,24 +13,45 @@ import { initialState } from '../reducers/user';
    _app.js 는 props로 Component를 받는데 이부분에 각각의 페이지 마다 다르게 적용될 부분이 들어간다.
 */
 
-const NodeBird = ({Component}) => {
+const NodeBird = ({Component,pageProps }) => {
     return (
         <>
             <Head>
+                <link
+                rel="stylesheet"
+                type="text/css"
+                charset="UTF-8"
+                href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
+                />
+                <link
+                rel="stylesheet"
+                type="text/css"
+                href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
+                />
                 <title>NodeBird</title>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.13.0/antd.compact.min.css" integrity="sha512-1hNNMQk/NM85FLhT2Rxal0CPnh0nw5hD12uXml/dS6APxgUXEHpZY6UN8XJ3lTvssxNAjf2vGnqsnLwEtwaJyA==" crossOrigin="anonymous" />
             </Head>
             <AppLayout>
-                <Component/>
+                <Component {...pageProps}/>
             </AppLayout>
         </>
     );
 };
 NodeBird.propTypes = {
     Component: propTypes.elementType.isRequired,
-    store: propTypes.object.isRequired,
+    store: propTypes.object,
+    pageProps: propTypes.object.isRequired,
 }
-
+NodeBird.getInitialProps = async(context) => {
+    //Component ==> pages 폴더에있는 페이지들
+    const {ctx, Component} = context;
+    let pageProps = {};
+    //만약 Component에 getInitialProps가 있으면 실행해주겠다
+    if(Component.getInitialProps){
+        pageProps = await Component.getInitialProps(ctx);
+    }
+    return {pageProps};
+};
 const configureStore = (initialState,options)=>{
     const sagaMiddleware = createSagaMiddleware();
     const middlewares = [sagaMiddleware];

@@ -17,8 +17,8 @@ function logOutAPI(){//post 두번째 인자는 data인데 빈 객체라도 넣�
         withCredentials: true,//쿠키를 주고 받을수 있게 해줌(서버쪽은 따로 해줘야함)
     });
 }
-function loadUserAPI(){
-    return axios.get('/user/',{
+function loadUserAPI(userId){
+    return axios.get(userId ? `/user/${userId}` : '/user/',{
         withCredentials: true,//쿠키를 주고 받을수 있게 해줌(서버쪽은 따로 해줘야함)
     });
 }
@@ -69,19 +69,20 @@ function* logOut(action){
         })
     }
 }
-function* loadUser(){
+function* loadUser(action){
     try{
-        const result = yield call(loadUserAPI);
+        const result = yield call(loadUserAPI, action.data);
         yield put({ //put 은 dispatch 와 동일한 기능을 한다
             type: LOAD_USER_SUCCESS,
             data: result.data,
+            me: !action.data
         })
     }catch(e){
         //로그인 실패시
         console.error(e);
         yield put({
             type: LOAD_USER_FAILURE,
-            
+            error:e
         })
     }
 }

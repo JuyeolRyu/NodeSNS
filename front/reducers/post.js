@@ -1,14 +1,5 @@
 export const initialState = {
-    mainPosts: [{
-        id:1,
-        User:{
-            id:1,
-            nickname:'코몽',
-        },
-        content:'첫번째 게시물',
-        img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt8o9EBlf1ZD0lBbJfUcC6wRJDcMZTw8oVQA&usqp=CAU',
-        Comments: [],
-    }], //화면에 보일 포스트들
+    mainPosts: [], //화면에 보일 포스트들
     imagePaths:[],//미리보기 이미지 경로
     addPostErrorReason: false,//포스트 업로드 실패 사유
     isAddingPost: false,//포스트업로드중
@@ -18,25 +9,6 @@ export const initialState = {
     addCommentErrorReason: '',
 };
 
-const dummyPost = {
-    id:2,
-    User: {
-        id:1,
-        nickname:'코몽',
-    },
-    content: '더미포스트입니다.',
-    Comments: [],
-};
-
-const dummyComment = {
-    id:1,
-    User: {
-        id:2,
-        nickname:'불족발',
-    },
-    createdAt: new Date(),
-    content: '더미댓글입니다.',
-};
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
@@ -81,7 +53,15 @@ export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
-const REMOVE_IMAGE = 'REMOVE_IMAGE';
+export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST';
+export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
+export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE';
+
+export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
+export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
+export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
+
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 
 export const addPost = {
     type:ADD_POST_REQUEST,
@@ -89,6 +69,72 @@ export const addPost = {
 
 const reducer = (state = initialState,action) => {
     switch(action.type){
+        //retweet
+        case RETWEET_REQUEST:{
+            return{
+                ...state,
+            };
+        }
+        case RETWEET_SUCCESS:{
+            return{
+                ...state,
+                mainPosts: [action.data, ...state.mainPosts],
+            };
+        }
+        case RETWEET_FAILURE:{
+            return{
+                ...state,
+            };
+        }
+        //like
+        case LIKE_POST_REQUEST:{
+            return{
+                ...state,
+            };
+        }
+        case LIKE_POST_SUCCESS:{
+            const postIndex = state.mainPosts.findIndex((v => v.id === action.data.postId))
+            const post = state.mainPosts[postIndex];
+            const Likers = [{ id:action.data.userId}, ...post.Likers];
+            const mainPosts = [...state.mainPosts];
+            mainPosts[postIndex] = {...post,Likers};
+            return{
+                ...state,
+                mainPosts,
+            };
+        }
+        case LIKE_POST_FAILURE:{
+            return{
+                ...state,
+            };
+        }
+        case UNLIKE_POST_REQUEST:{
+            return{
+                ...state,
+            };
+        }
+        case UNLIKE_POST_SUCCESS:{
+            const postIndex = state.mainPosts.findIndex((v => v.id === action.data.postId))
+            const post = state.mainPosts[postIndex];
+            const Likers = [post.Likers.filter(v=>v.id === action.data.postId)];
+            const mainPosts = [...state.mainPosts];
+            mainPosts[postIndex] = {...post,Likers};
+            return{
+                ...state,
+                mainPosts,
+            };
+        }
+        case UNLIKE_POST_FAILURE:{
+            return{
+                ...state,
+            };
+        }
+        case REMOVE_IMAGE:{
+            return {
+                ...state,
+                imagePaths: state.imagePaths.filter((v,i)=> i !== action.index),
+            };
+        }
         case ADD_POST_REQUEST:{
             return{
                 ...state,
@@ -103,6 +149,7 @@ const reducer = (state = initialState,action) => {
                 isAddingPost:false,
                 mainPosts: [action.data, ...state.mainPosts],
                 postAdded: true,
+                imagePaths: [],
             };
         }
         case ADD_POST_FAILURE:{
@@ -123,7 +170,7 @@ const reducer = (state = initialState,action) => {
         case ADD_COMMENT_SUCCESS:{
             const postIndex = state.mainPosts.findIndex(v=>v.id === action.data.postId);
             const post = state.mainPosts[postIndex];
-            const Comments = [...post.Comments, dummyComment];
+            const Comments = [...post.Comments, action.data.comment];
             const mainPosts = [...state.mainPosts];
             mainPosts[postIndex] = {...post, Comments};
             return{
@@ -140,19 +187,51 @@ const reducer = (state = initialState,action) => {
                 addCommentErrorReason: action.error,
             };
         }
-        case LOAD_MAIN_POSTS_REQUEST:{
+        case LOAD_COMMENTS_SUCCESS:
+            const postIndex = state.mainPosts.findIndex(v=>v.id === action.data.postId);
+            const post = state.mainPosts[postIndex];
+            const Comments = action.data.comments;
+            const mainPosts = [...state.mainPosts];
+            mainPosts[postIndex] = {...post,Comments};
+            return {
+                ...state,
+                mainPosts,
+            }
+        case LOAD_MAIN_POSTS_REQUEST:
+        case LOAD_USER_POSTS_REQUEST:
+        case LOAD_HASHTAG_POSTS_REQUEST:{//같은 기능을 수행하는 케이스의 경우
             return{
                 ...state,
                 mainPosts: [],
             };
         }
-        case LOAD_MAIN_POSTS_SUCCESS:{
+        case LOAD_MAIN_POSTS_SUCCESS:
+        case LOAD_USER_POSTS_SUCCESS:
+        case LOAD_HASHTAG_POSTS_SUCCESS:{
             return{
                 ...state,
                 mainPosts: action.data,
             };
         }
-        case LOAD_MAIN_POSTS_FAILURE:{
+        case LOAD_MAIN_POSTS_FAILURE:
+        case LOAD_USER_POSTS_FAILURE:
+        case LOAD_HASHTAG_POSTS_FAILURE:{
+            return{
+                ...state,
+            };
+        }
+        case UPLOAD_IMAGES_REQUEST:{
+            return{
+                ...state,
+            };
+        }
+        case UPLOAD_IMAGES_SUCCESS:{
+            return{
+                ...state,
+                imagePaths: [...state.imagePaths, ...action.data],
+            };
+        }
+        case UPLOAD_IMAGES_FAILURE:{
             return{
                 ...state,
             };

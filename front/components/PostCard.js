@@ -1,10 +1,13 @@
 import React,{useState,useCallback,useEffect} from 'react';
 import Link from 'next/link';
 import {Card,Button,Avatar, Input,Form,List,Comment} from 'antd';
-import { RetweetOutlined, HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { RetweetOutlined, HeartTwoTone,HeartOutlined, MessageOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { getTwoToneColor, setTwoToneColor } from '@ant-design/icons';
 import propTypes from 'prop-types';
 import {useSelector, useDispatch} from 'react-redux';
-import {ADD_COMMENT_REQUEST,ADD_COMMENT_SUCCESS,ADD_COMMENT_FAILURE} from '../reducers/post';
+import {ADD_COMMENT_REQUEST,LOAD_COMMENTS_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST, RETWEET_REQUEST} from '../reducers/post';
+import PostImages from './PostImages';
+import PostCardContent from './PostCardContent';
 
 const PostCard = ({post}) => {
     const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -13,22 +16,33 @@ const PostCard = ({post}) => {
     const {CommentAdded,isAddingComment} = useSelector(state=>state.post);
     const dispatch = useDispatch();
 
+    const liked = me && post.Likers && post.Likers.find(v=> v.id ===me.id);
+    setTwoToneColor('#eb2f96');
+    getTwoToneColor(); // #eb2f96
+
     const onToggleComment = useCallback(() => {
         setCommentFormOpened(prev => !prev);
-    });
+        if(!commentFormOpened){
+            dispatch({
+                type: LOAD_COMMENTS_REQUEST,
+                data: post.id,
+            });
+        }
+    },[]);
 
     const onSubmitComment =useCallback((e) => {
         //e.preventDefault();
         if(!me){
             return alert('로그인이 필요합니다.');
         }
-        dispatch({
+        return dispatch({
             type:ADD_COMMENT_REQUEST,
             data: {
-                postId:post.id,
+                postId: post.id,
+                content:commentText,
             }
         });
-    },[me && me.id]);
+    },[me && me.id, commentText]);
 
     useEffect(()=>{
         setCommentText('');
@@ -38,35 +52,77 @@ const PostCard = ({post}) => {
         setCommentText(e.target.value)
     },[]);
 
+    const onToggleLike = useCallback(() => {
+        if(!me){
+            return alert('로그인이 필요합니다');
+        }
+        if(liked){//좋아요 누른 상태
+            dispatch({
+                type: UNLIKE_POST_REQUEST,
+                data: post.id,
+            });
+        }else{//누르지 않은 상태
+            dispatch({
+                type: LIKE_POST_REQUEST,
+                data: post.id,
+            });
+        }
+    },[me && me.id, post && post.id,liked]);
+
+    const onRetweet = useCallback(()=>{
+        if(!me){
+            return alert('로그인이 필요합니다.');
+        }
+        return dispatch({
+            type: RETWEET_REQUEST,
+            data: post.id,
+        })
+    },[me && me.id, post.id]);
     return(
         <div>
         <Card
             key={+post.createdAt}
-            cover={post.img && <img alt="example" src={post.img} />}
-            actions={[
-                <RetweetOutlined key="retweet" />,
-                <HeartOutlined key="heart" />,
+            cover={post.Images && post.Images[0] && <PostImages images={post.Images}/>}
+            actions={[ 
+                <RetweetOutlined key="retweet" onClick={onRetweet}/>,
+                liked
+                ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
+                : <HeartOutlined key="heart" onClick={onToggleLike} />,
                 <MessageOutlined key="message" onClick={onToggleComment}/>,
                 <EllipsisOutlined key="eclipsis" />,
             ]}
+            title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
             extra={<Button>팔로우</Button>}
         >
-            <Card.Meta
-                avatar={<Avatar>{post.User.nickname}</Avatar>}
-                title={post.User.nickname}
-                description={
-                    <div>
-                        {post.content.split(/(#[^\s]+)/g).map((v) => {
-                            if(v.match(/(#[^\s]+)/g)){
-                                return(
-                                    <Link href="/hashtag"><a>{v}</a></Link>
-                                )
-                            }
-                            return v;
-                        })}
-                    </div>
-                }//해시태그 링크는 Link태그로 사용
-            />
+            {post.RetweetId && post.Retweet
+            ? (
+                <Card
+                    cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images}/>}
+                >
+                    <Card.Meta
+                        avatar={(
+                            <Link href={{pathname: '/user', query: {id: post.Retweet.User.id}}} as={`user/${post.Retweet.User.id}`}>
+                                <a><Avatar>{post.Retweet.User.nickname}</Avatar></a>
+                            </Link>
+                        )}
+                        title={post.User.nickname}
+                        description={<PostCardContent postData={post.Retweet.content}/>}
+                    />
+                </Card>
+            )
+            : (
+                <Card.Meta
+                    //href={'user/${post.User.id}'} ==> 이건 서버딴에서 렌더링 되므로 전체 페이지가 렌더링 된다.
+                    //프론트에서 처리 가능하도록 아래처럼 변경
+                    avatar={(
+                        <Link href={{pathname: '/user', query: {id: post.User.id}}} as={'user/${post.User.id}'}>
+                            <a><Avatar>{post.User.nickname}</Avatar></a>
+                        </Link>
+                    )}
+                    title={post.User.nickname}
+                    description={<PostCardContent postData={post.content}/>}
+                />
+            )}
         </Card>
             {/* 댓글 입력창 댓글리스트 */}
             {commentFormOpened && (
@@ -85,7 +141,11 @@ const PostCard = ({post}) => {
                             <li>
                                 <Comment
                                     author={item.User.nickname}
-                                    avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                                    avatar={(
+                                        <Link href={{pathname:'/user', query:{id:item.User.id}}} as={`/user/${item.User.id}`}>
+                                            <a><Avatar>{item.User.nickname[0]}</Avatar></a>
+                                        </Link>
+                                    )}
                                     content={item.content}
                                 />
                             </li>
@@ -102,7 +162,7 @@ PostCard.propTypes = {
         User: propTypes.object,
         content: propTypes.string,
         img: propTypes.string,
-        createdAt: propTypes.object,
+        createdAt: propTypes.string,
     })
 }
 export default PostCard;

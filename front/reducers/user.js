@@ -1,13 +1,6 @@
 /*user정보를 담고 있는 스토어
   초기 설정함수
 */
-const dummyUser = {
-    nickname: '코몽',
-    Posts: [],
-    Followings: [],
-    Followers: [],
-    id:1,
-};
 export const initialState = {
     me: null,
     isLoggingOut: false,//로그아웃 시도중
@@ -121,10 +114,16 @@ const reducer = (state = initialState, action) => {
             };
         }
         case LOAD_USER_SUCCESS:{
-            return{
+            if(action.me){
+                return{
+                    ...state,
+                    me: action.data,
+                };
+            }
+            return {
                 ...state,
-                me: action.data,
-            };
+                userInfo: action.data,
+            }
         }
         case LOAD_USER_FAILURE:{
             return{
