@@ -51,13 +51,53 @@ export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 
 const reducer = (state = initialState, action) => {
     switch(action.type){
+        //팔로우,언팔로우
+        case FOLLOW_USER_REQUEST: {
+            return{
+                ...state,
+            };
+        }
+        case FOLLOW_USER_SUCCESS:{
+            return{
+                ...state,
+                me: {
+                    ...state.me,
+                    Followings: [{id:action.data},...state.me.Followings],
+                }
+            }
+        }
+        case FOLLOW_USER_FAILURE:{
+            return{
+                ...state,
+            }
+        }
+        case UNFOLLOW_USER_REQUEST: {
+            return{
+                ...state,
+            };
+        }
+        case UNFOLLOW_USER_SUCCESS:{
+            return{
+                ...state,
+                me: {
+                    ...state.me,
+                    Followings: state.me.Followings.filter(v=>v.id !==action.data),
+                }
+            }
+        }
+        case UNFOLLOW_USER_FAILURE:{
+            return{
+                ...state,
+            }
+        }
+        
+        //로그인 사이클
         case LOG_IN_REQUEST: {
             return{
                 ...state,
                 isLoggingIn: true,
             };
         }
-        //로그인 사이클
         case LOG_IN_SUCCESS:{
             return{
                 ...state,

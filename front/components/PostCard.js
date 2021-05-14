@@ -6,6 +6,7 @@ import { getTwoToneColor, setTwoToneColor } from '@ant-design/icons';
 import propTypes from 'prop-types';
 import {useSelector, useDispatch} from 'react-redux';
 import {ADD_COMMENT_REQUEST,LOAD_COMMENTS_REQUEST,LIKE_POST_REQUEST,UNLIKE_POST_REQUEST, RETWEET_REQUEST} from '../reducers/post';
+import {FOLLOW_USER_REQUEST,UNFOLLOW_USER_REQUEST} from '../reducers/user';
 import PostImages from './PostImages';
 import PostCardContent from './PostCardContent';
 
@@ -78,6 +79,19 @@ const PostCard = ({post}) => {
             data: post.id,
         })
     },[me && me.id, post.id]);
+
+    const onFollow = useCallback(userId => () => {
+        dispatch({
+            type: FOLLOW_USER_REQUEST,
+            data: userId
+        })
+    },[]); 
+    const onUnfollow = useCallback(userId => () => {
+        dispatch({
+            type: UNFOLLOW_USER_REQUEST,
+            data: userId
+        })
+    },[]);
     return(
         <div>
         <Card
@@ -92,7 +106,12 @@ const PostCard = ({post}) => {
                 <EllipsisOutlined key="eclipsis" />,
             ]}
             title={post.RetweetId ? `${post.User.nickname}님이 리트윗하셨습니다.` : null}
-            extra={<Button>팔로우</Button>}
+            extra={!me || post.User.id === me.id //로그인을 안했거나 나의 게시물일 경우
+                ? null
+                : me.Followings && me.Followings.find(v=>v.id === post.User.id)//이미 팔로잉 하고 있는 경우
+                ?<Button onClick={onUnfollow(post.User.id)}>언팔로우</Button>
+                :<Button onClick={onFollow(post.User.id)}>팔로우</Button>
+            }
         >
             {post.RetweetId && post.Retweet
             ? (
