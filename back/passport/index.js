@@ -3,21 +3,42 @@ const db = require('../models');
 const local = require('./local');
 
 module.exports = () => {
-    //프론트에서 쿠키를 보내면 서버에서 메모리 검사해서 쿠키와 연관된 id가있는지 보고 유저정보를 디비로 불러옴
-    passport.serializeUser((user,done) => {//서버쪽에 [[id:3, cookie:'asdasda']] 를 서버에 저장(프론트에서는 쿠기사용)
-        return done(null, user.id);
-    });
-    passport.deserializeUser(async(id,done)=> {
-        try{
-            const user = await db.User.findOne({
-                where: {id},
-            });
-            return done(null,user);//req.user에 저장됨
-        }catch(e){
-            console.error(e);
-            return done(e);
-        }
-    });
+  passport.serializeUser((user, done) => { // 서버쪽에 [{ id: 3, cookie: 'asdfgh' }]
+    return done(null, user.id);
+  });
 
-    local();//전략연결
-}
+  passport.deserializeUser(async (id, done) => {
+    try {
+      const user = await db.User.findOne({
+        where: { id },
+        include: [{
+          model: db.Post,
+          as: 'Posts',
+          attributes: ['id'],
+        }, {
+          model: db.User,
+          as: 'Followings',
+          attributes: ['id'],
+        }, {
+          model: db.User,
+          as: 'Followers',
+          attributes: ['id'],
+        }],
+      });
+      return done(null, user); // req.user
+    } catch (e) {
+      console.error(e);
+      return done(e);
+    }
+  });
+
+  local();
+};
+
+// 프론트에서 서버로는 cookie만 보내요(asdfgh)
+// 서버가 쿠키파서, 익스프레스 세션으로 쿠키 검사 후 id: 3 발견
+// id: 3이 deserializeUser에 들어감
+// req.user로 사용자 정보가 들어감
+
+// 요청 보낼때마다 deserializeUser가 실행됨(db 요청 1번씩 실행)
+// 실무에서는 deserializeUser 결과물 캐싱
