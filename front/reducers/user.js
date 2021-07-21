@@ -54,6 +54,7 @@ export const EDIT_NICKNAME_SUCCESS = 'EDIT_NICKNAME_SUCCESS';
 export const EDIT_NICKNAME_FAILURE = 'EDIT_NICKNAME_FAILURE';
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -185,6 +186,15 @@ export default (state = initialState, action) => {
         },
       };
     }
+    case REMOVE_POST_OF_ME: {
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: state.me.Posts.filter(v => v.id !== action.data),
+        },
+      };
+    }
     case LOAD_FOLLOWERS_REQUEST: {
       return {
         ...state,
@@ -193,7 +203,7 @@ export default (state = initialState, action) => {
     case LOAD_FOLLOWERS_SUCCESS: {
       return {
         ...state,
-        followerList: action.data,
+        followerList: state.followerList.concat(action.data),
       };
     }
     case LOAD_FOLLOWERS_FAILURE: {
@@ -209,7 +219,7 @@ export default (state = initialState, action) => {
     case LOAD_FOLLOWINGS_SUCCESS: {
       return {
         ...state,
-        followingList: action.data,
+        followingList: state.followingList.concat(action.data),
       };
     }
     case LOAD_FOLLOWINGS_FAILURE: {
