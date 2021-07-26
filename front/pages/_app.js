@@ -1,5 +1,6 @@
 import React from 'react';
-import Head from 'next/head';
+import Helmet from 'react-helmet';
+
 import PropTypes from 'prop-types';
 import withRedux from 'next-redux-wrapper';
 import withReduxSaga from 'next-redux-saga';
@@ -16,12 +17,35 @@ import axios from 'axios';
 const NodeBird = ({ Component, store, pageProps }) => {
   return (
     <Provider store={store}>
-      <Head>
-        <title>NodeBird</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.16.2/antd.css" />
-        <link rel="stylesheet" type="text/css" charSet="UTF-8" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />
-      </Head>
+      <Helmet
+        title="NodeBird"
+        htmlAttributes = {{ lang: 'ko'}}
+        meta={[{
+          charset: 'UTF-8',
+        },{
+          name: 'viesport', content: 'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=yes,viewport-fit=cover',
+        },{
+          'http-equiv': 'X-UA-Compatible', content: 'IE-edge',
+        },{
+          name: 'description', content: 'co_mong NodeSNS',
+        },{
+          name: 'og:title', content: 'NodeSNS'
+        },{
+          name: 'og:description', content: 'co_mong NodeSNS',
+        },{
+          property: 'og:type', content: 'website',
+        }]}
+        link ={[{
+          rel:"stylesheet",href:"https://cdnjs.cloudflare.com/ajax/libs/antd/3.16.2/antd.css",
+        },{
+          rel:"stylesheet", href:"https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css",
+        },{
+          rel:"stylesheet", href:"https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css",
+        }]}
+        script={[{
+          src: ''
+        }]}
+      />
       <AppLayout>
         <Component {...pageProps} />
       </AppLayout>
@@ -36,7 +60,6 @@ NodeBird.propTypes = {
 };
 
 NodeBird.getInitialProps = async (context) => {
-  console.log(context);
   const { ctx, Component } = context;
   let pageProps = {};
   const state = ctx.store.getState();
@@ -59,10 +82,7 @@ NodeBird.getInitialProps = async (context) => {
 
 const configureStore = (initialState, options) => {
   const sagaMiddleware = createSagaMiddleware();
-  const middlewares = [sagaMiddleware,(store) => (next) => (action) => {//커스텀 미들웨어 에러 찾기(리덕스 사가)
-    console.log(action);
-    next(action);
-  }];
+  const middlewares = [sagaMiddleware];
   const enhancer = process.env.NODE_ENV === 'production'
     ? compose(applyMiddleware(...middlewares))
     : compose(
