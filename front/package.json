@@ -5,19 +5,24 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "next build",
-    "start": "next start"
+    "build": "cross-env BUNDLE_ANALYZE=both next build",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production next start"
   },
   "author": "ZeroCho",
   "license": "MIT",
   "dependencies": {
+    "@zeit/next-bundle-analyzer": "^0.1.2",
     "antd": "^3.17.0",
     "axios": "^0.18.0",
+    "compression-webpack-plugin": "^8.0.1",
     "cookie-parser": "^1.4.4",
+    "cross-env": "^7.0.3",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "express-session": "^1.16.1",
     "immer": "^9.0.5",
+    "moment": "^2.29.1",
     "morgan": "^1.9.1",
     "next": "^8.1.0",
     "next-redux-saga": "^4.1.2",
@@ -29,7 +34,8 @@
     "react-redux": "^7.1.0-alpha.4",
     "redux": "^4.0.1",
     "redux-saga": "^1.0.2",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "webpack-ant-icon-loader": "^1.0.8"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import moment from 'moment';
+moment.locale('ko');
 
 import {
   ADD_COMMENT_REQUEST,
@@ -165,6 +167,7 @@ const PostCard = ({ post }) => {
                 title={post.Retweet.User.nickname}
                 description={<PostCardContent postData={post.Retweet.content} />} // a tag x -> Link
               />
+              {moment(post.createdAt).format('YYYY.MM.DD.')}
             </Card>
           )
           : (
