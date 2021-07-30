@@ -44,8 +44,11 @@ function* logIn(action) {
     });
   } catch (e) { // loginAPI 실패
     console.error(e);
+    console.log(e);
+    console.log(e.response);
     yield put({
       type: LOG_IN_FAILURE,
+      reason: e.response && e.response.data,
     });
   }
 }
