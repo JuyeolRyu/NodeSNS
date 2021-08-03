@@ -21,7 +21,7 @@ const app = express();
 db.sequelize.sync();
 passportConfig();
 
-if(prod){
+if (prod) {
   app.use(hpp());
   app.use(helmet());
   app.use(morgan('combined'));
@@ -29,7 +29,7 @@ if(prod){
     origin: /homedev\.ml$/,
     credentials: true,
   }));
-}else{
+} else {
   app.use(morgan('dev'));
   app.use(cors({
     origin: true,
@@ -48,17 +48,17 @@ app.use(expressSession({
   cookie: {
     httpOnly: true,
     secure: false, // https를 쓸 때 true
-    domian: prod && '.homedev.ml',
+    domain: prod && '.homedev.ml',
   },
   name: 'rnbck',
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/',(req,res)=> {
-  console.log(req);
-  res.send('NodeSNS Server running...');
+app.get('/', (req, res) => {
+  res.send('NodeSNS Server Running!!!');
 });
+
 // API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구
 app.use('/api/user', userAPIRouter);
 app.use('/api/post', postAPIRouter);

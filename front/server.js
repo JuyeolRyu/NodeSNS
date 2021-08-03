@@ -17,7 +17,7 @@ app.prepare().then(() => {
   const server = express();
 
   server.use(morgan('dev'));
-  server.use('/',express.static(path.join(__dirname,'public')));
+  server.use('/', express.static(path.join(__dirname, 'public')));
   server.use(express.json());
   server.use(express.urlencoded({ extended: true }));
   server.use(cookieParser(process.env.COOKIE_SECRET));
