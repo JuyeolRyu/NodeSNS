@@ -66,8 +66,8 @@ NodeBird.getInitialProps = async (context) => {
   let pageProps = {};
   const state = ctx.store.getState();
   const cookie = ctx.isServer ? ctx.req.headers.cookie : '';
-
-  if(ctx.isServer && cookie){//서버 환경이고 쿠키가 있으면
+  axios.defaults.headers.Cookie = '';
+  if (ctx.isServer && cookie) {
     axios.defaults.headers.Cookie = cookie;
   }
   if(!state.user.me){
