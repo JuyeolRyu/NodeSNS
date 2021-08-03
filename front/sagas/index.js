@@ -2,8 +2,9 @@ import { all, fork } from 'redux-saga/effects';
 import axios from 'axios';
 import user from './user';
 import post from './post';
+import {backurl} from '../config/config';
 
-axios.defaults.baseURL = 'http://localhost:3065/api';
+axios.defaults.baseURL = `${backurl}/api`;
 
 export default function* rootSaga() {
   yield all([
