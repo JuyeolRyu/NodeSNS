@@ -48,7 +48,7 @@ app.use(expressSession({
   cookie: {
     httpOnly: true,
     secure: false, // https를 쓸 때 true
-    domian: prod && 'homedev.ml',
+    domian: prod && '.homedev.ml',
   },
   name: 'rnbck',
 }));
@@ -56,6 +56,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/',(req,res)=> {
+  console.log(req);
   res.send('NodeSNS Server running...');
 });
 // API는 다른 서비스가 내 서비스의 기능을 실행할 수 있게 열어둔 창구
