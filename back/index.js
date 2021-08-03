@@ -48,7 +48,7 @@ app.use(expressSession({
   cookie: {
     httpOnly: true,
     secure: false, // https를 쓸 때 true
-    domian: prod && '.homedev.ml',
+    domian: prod && 'homedev.ml',
   },
   name: 'rnbck',
 }));
