@@ -1,13 +1,14 @@
 import {Container,Button,Row,Col} from 'react-bootstrap';
+import Login from '../components/loginForm'
 const Index = () => {
     return(
         <>
             <Container className="p-3" style={{marginTop:'5%', marginBottom:'5%'}}>
                 <Row style={{height: '80%'}}>
-                    <Col md={2}>col1</Col>
-                    <Col d-block d-md-none={'auto'}><img src="../images/login_image.png"/></Col>
-                    <Col md={4} style={{backgroundColor:'#7FFFD4'}}>col3</Col>
-                    <Col md={2}>col4</Col>
+                    <Col md={2}></Col>
+                    <Col md={'auto'}><img src="../images/login_image.png" style={{height:'600px'}}/></Col>
+                    <Col md={4} style={{border:"1px solid black"}}><Login></Login></Col>
+                    <Col md={2}></Col>
                 </Row>
                 <Row style={{height: '30%'}}><Button>hello</Button></Row>
             </Container>
