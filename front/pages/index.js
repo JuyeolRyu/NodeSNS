@@ -1,52 +1,32 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import PostForm from '../containers/PostForm';
-import PostCard from '../containers/PostCard';
-import { LOAD_MAIN_POSTS_REQUEST } from '../reducers/post';
-
-const Home = () => {
-  const { me } = useSelector(state => state.user);
-  const { mainPosts, hasMorePost } = useSelector(state => state.post);
-  const dispatch = useDispatch();
-  const countRef = useRef([]);
-
-  const onScroll = useCallback(() => {
-    if(window.scrollY+document.documentElement.clientHeight > document.documentElement.scrollHeight-300){
-      if(hasMorePost){
-        const lastId = mainPosts[mainPosts.length-1].id;
-        if(!countRef.current.includes(lastId)){
-          dispatch({
-            type: LOAD_MAIN_POSTS_REQUEST,
-            lastId: lastId,
-          });
-        }
-        countRef.current.push(lastId);
-      }
-    }
-  },[hasMorePost, mainPosts.length]);
-
-  useEffect(() => {
-    window.addEventListener('scroll',onScroll);
-    return () => {
-      window.removeEventListener('scroll',onScroll);
-    }
-  },[mainPosts.length]);
-
-  return (
-    <div>
-      {me && <PostForm />}
-      {mainPosts.map((c) => {
-        return (
-          <PostCard key={c.id} post={c} />
-        );
-      })}
-    </div>
-  );
+import {Container,Button,Row,Col} from 'react-bootstrap';
+const Index = () => {
+    return(
+        <>
+            <Container className="p-3" style={{marginTop:'5%', marginBottom:'5%'}}>
+                <Row style={{height: '80%'}}>
+                    <Col md={2}>col1</Col>
+                    <Col d-block d-md-none={'auto'}><img src="../images/login_image.png"/></Col>
+                    <Col md={4} style={{backgroundColor:'#7FFFD4'}}>col3</Col>
+                    <Col md={2}>col4</Col>
+                </Row>
+                <Row style={{height: '30%'}}><Button>hello</Button></Row>
+            </Container>
+{/*             
+            <body>
+            <div className="container" style={{marginTop:'5%', marginBottom:'5%'}}>
+                <div className="row d-flex flex-column h-100">
+                    <div class="col-md-2"></div>
+                    <img class="col-md-4 h-50" src="../images/login_image.png"/>
+                    <div class="col-md-4 h-50" style={{backgroundColor:'#7FFFD4'}}></div>
+                    <div class="col-md-2"></div>
+                </div>
+            </div>
+            <div style={{align:'center'}}>
+                footer
+            </div>
+            </body> */}
+        </>
+    );
 };
-Home.getInitialProps = async(context)=>{
-  console.log(Object.keys(context))
-  context.store.dispatch({
-    type: LOAD_MAIN_POSTS_REQUEST,
-  });
-}
-export default Home;
+
+export default Index;
