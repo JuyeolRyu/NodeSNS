@@ -1,11 +1,14 @@
 import {Form,Button} from 'react-bootstrap';
 const Login = () => {
     return(
-        <Form>
+        <>
+        <Form style ={{border:"1px solid black",height:'400px',backgroundColor:'#FF9DFF'}}>
+            <Form.Text style={{textAlign:'center'}}>
+                hello
+            </Form.Text>
             <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Email address</Form.Label>
                 <Form.Control type="email" placeholder="Enter email" />
-                
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -19,6 +22,10 @@ const Login = () => {
                 Submit
             </Button>
         </Form>
+        <div style ={{border:"1px solid black",height:'150px',margin: '50px'}}>
+            hello
+        </div>
+        </>
     )
 }
 
